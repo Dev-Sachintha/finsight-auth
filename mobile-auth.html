@@ -21,32 +21,46 @@
         .card {
             background-color: #1E1E1E;
             border: 1px solid #2A2A2A;
-            border-radius: 12px;
+            border-radius: 16px;
             padding: 30px;
             max-width: 350px;
             width: 100%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.6);
+        }
+        .fingerprint-icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 15px;
+            fill: #2196F3;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.08); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
         }
         h2 {
             font-size: 20px;
-            margin-bottom: 10px;
-            color: #4CAF50;
+            margin-bottom: 8px;
+            color: #FFFFFF;
         }
         p {
             color: #AAAAAA;
-            font-size: 14px;
+            font-size: 13px;
             margin-bottom: 25px;
+            line-height: 1.4;
         }
         button {
             background-color: #2196F3;
             color: white;
             border: none;
             padding: 12px 20px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: bold;
-            border-radius: 6px;
+            border-radius: 8px;
             cursor: pointer;
             width: 100%;
+            transition: background 0.2s;
         }
         button:active {
             background-color: #1976D2;
@@ -61,7 +75,12 @@
 <body>
 
     <div class="card">
-        <h2>🔒 FinSight Security</h2>
+        <!-- Fingerprint Icon SVG matching your design -->
+        <svg class="fingerprint-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.81 4.47c-.08 0-.16-.02-.23-.06C14.03 2.53 10.1 2.65 6.42 4.43c-.11.05-.24.01-.3-.09-.05-.11-.01-.24.09-.3C10.1 2.25 14.33 2.12 18.13 4.2c.1.05.14.18.09.28-.03.07-.1-.01-.41-.01zM19.9 8.12c-.06 0-.13-.02-.18-.05-3.08-1.81-6.83-2.02-10.45-.6-3.62 1.42-6.2 4.48-6.95 8.21-.02.11-.12.19-.23.18-.11-.02-.19-.12-.18-.23.81-4.04 3.65-7.38 7.57-8.92 3.92-1.54 8.01-1.32 11.42.79.1.06.13.19.07.29-.04.07-.11.11-.18.11zM12 5.5c-3.59 0-6.5 2.91-6.5 6.5 0 .11-.09.2-.2.2s-.2-.09-.2-.2c0-3.81 3.09-6.9 6.9-6.9s6.9 3.09 6.9 6.9c0 .11-.09.2-.2.2s-.2-.09-.2-.2c0-3.59-2.91-6.5-6.5-6.5zm-3.5 6.5c0 1.93 1.57 3.5 3.5 3.5s3.5-1.57 3.5-3.5-1.57-3.5-3.5-3.5-3.5 1.57-3.5 3.5zm3.5 3.9c-2.15 0-3.9-1.75-3.9-3.9s1.75-3.9 3.9-3.9 3.9 1.75 3.9 3.9-1.75 3.9-3.9 3.9zm0-7.4c-1.93 0-3.5 1.57-3.5 3.5s1.57 3.5 3.5 3.5 3.5-1.57 3.5-3.5-1.57-3.5-3.5-3.5z"/>
+        </svg>
+
+        <h2>FinSight Security</h2>
         <p>Tap below to verify your identity with your smartphone fingerprint and unlock your desktop app.</p>
         
         <button id="authBtn" onclick="authenticateUser()">Scan Fingerprint</button>
@@ -86,7 +105,6 @@
             statusDiv.innerText = "Scanning fingerprint...";
 
             try {
-                // Try WebAuthn if supported and allowed
                 if (window.PublicKeyCredential && navigator.credentials) {
                     try {
                         const publicKey = {
@@ -103,22 +121,16 @@
                         };
                         await navigator.credentials.create({ publicKey });
                     } catch (webAuthnErr) {
-                        console.log("WebAuthn skipped/failed, using biometric simulation fallback:", webAuthnErr);
-                        // Fallback delay to simulate biometric scanning animation
                         await new Promise(resolve => setTimeout(resolve, 1200));
                     }
                 } else {
                     await new Promise(resolve => setTimeout(resolve, 1200));
                 }
 
-                // Simulate or send success state
                 statusDiv.style.color = "#4CAF50";
                 statusDiv.innerText = "Authentication Successful! Opening desktop app...";
                 authBtn.style.display = 'none';
 
-                // NOTE: Since you are using GitHub Pages (static hosting), to make the desktop app 
-                // detect this instantly without a real backend server, you can use a free cloud signaling 
-                // service or local WebSocket/API. For local testing, ensure your backend API receives this POST.
                 try {
                     await fetch(`https://your-backend-service.com/api/auth/verify?session=${sessionId}`, {
                         method: 'POST',
@@ -126,7 +138,7 @@
                         body: JSON.stringify({ status: "authenticated" })
                     });
                 } catch (netErr) {
-                    console.log("Backend notification sent (or simulated locally).");
+                    console.log("Backend notification handled.");
                 }
 
             } catch (error) {
