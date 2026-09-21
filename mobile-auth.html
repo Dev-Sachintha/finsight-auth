@@ -46,6 +46,7 @@
             padding: 12px 20px; font-size: 15px; font-weight: bold;
             border-radius: 8px; cursor: pointer; width: 100%;
         }
+        button:active { background-color: #1976D2; }
         #status { margin-top: 15px; font-size: 13px; font-weight: bold; }
     </style>
 </head>
@@ -76,7 +77,8 @@
             statusDiv.style.color = "#FFA726";
             statusDiv.innerText = "Scanning fingerprint...";
 
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            // Simulate smooth biometric verification delay
+            await new Promise(resolve => setTimeout(resolve, 1200));
 
             statusDiv.style.color = "#4CAF50";
             statusDiv.innerText = "Authentication Successful! Opening desktop app...";
@@ -89,7 +91,7 @@
                     body: JSON.stringify({ status: "authenticated" })
                 });
             } catch (err) {
-                console.log("Verified locally");
+                console.log("Local sync triggered");
             }
         }
     </script>
